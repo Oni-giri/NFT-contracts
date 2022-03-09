@@ -186,12 +186,15 @@ def test_whitelistMint(deployer, signer, nft, alice, bob):
 
     with brownie.reverts("invalid arguments or not whitelisted"):
         nft.whitelistMint(27, 11, 0, signed_alice, {"from": alice, "value": 10})
+    
+
 
 
     nft.whitelistMint(27, 10, 0, signed_alice, {"from": alice, "value": 10})
     assert nft.balanceOf(alice) == 1
     assert nft.totalSupply() == 1
     assert nft.totalWhitelistMinted() == 1
+    assert nft.getWhitelistMintedPerSignature(alice, 27, 10) == 1
 
     with brownie.reverts("over account whitelist limit"):
         nft.whitelistMint(27, 10, 0, signed_alice, {"from": alice, "value": 270})
@@ -204,6 +207,7 @@ def test_whitelistMint(deployer, signer, nft, alice, bob):
     assert nft.balanceOf(alice) == 27
     assert nft.totalSupply() == 27
     assert nft.totalWhitelistMinted() == 27
+    assert nft.getWhitelistMintedPerSignature(alice, 27, 10) == 27
 
     signed_bob = _sign(bob.address, 4, 10)
     with brownie.reverts("invalid arguments or not whitelisted"):
@@ -248,7 +252,7 @@ def test_whitelistMint(deployer, signer, nft, alice, bob):
         nft.whitelistMint(3, 0, 1, signed_bob2, {"from": bob})
 
 
-def test_specialMint(deployer, nft, alice, bob):
+def test_special_mint(deployer, nft, alice, bob):
     with brownie.reverts("arrays have different lengths"):
         nft.specialMint([alice, bob], [5, 10, 20])
 

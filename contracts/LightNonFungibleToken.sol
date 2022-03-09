@@ -238,4 +238,9 @@ contract LightNonFungibleToken is ERC721URIStorage, Ownable, Pausable, Whitelist
     function _baseURI() internal view override returns (string memory) {
         return __baseURI;
     }
+
+    function getWhitelistMintedPerSignature(address _user, uint256 _maxAmount, uint256 _price) external view returns (uint mintedPerSignature) {
+        bytes32 _hash = _getMessageHash(_user, _maxAmount, _price);
+        return(_whitelistMinted[_hash]);
+    }
 }
